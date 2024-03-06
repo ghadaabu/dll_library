@@ -1,5 +1,6 @@
 #include "dll.h"
 #include <memory.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 /* Public Function Implementation to create and return
@@ -113,28 +114,32 @@ int reverse_dll (dll_t *dll){
 	if (!dll) return -1;
 
 	dll_node_t *tmp1 = dll->head;
-	dll_node_t *tmp2 = NULL;
+	dll_node_t *tmp2; 
+	// dll_node_t *tmp2 = tmp1->right;
 
-	while (!tmp2){
-		tmp2 = tmp1->right;
-		tmp1->right = tmp1->left;
-		tmp1->left = tmp2;
-		tmp1 = tmp2;
+	while (tmp1 != NULL){
+		tmp2 = tmp1->left;
+		tmp1->left = tmp1->right;
+		tmp1->right = tmp2;
+		tmp1 = tmp1->left;
 	}
-	dll->head = tmp1;
+
+	if (tmp2 != NULL) {
+		dll->head = tmp2->left;
+	}
 	return 0;
 }
 
 /* Public Function Implementation to search for node based data.
  * Returns pointer to the node if found, else returns NULL.*/
 dll_node_t * search (dll_t *dll, void *app_data){
-	if (!dll || !app_data) return NULL;
+	if (!dll || !app_data || dll->head == NULL) return NULL;
 
 	dll_node_t *tmp = dll->head;
-	while (!tmp && tmp->data == app_data){
+	while (tmp->right != NULL && tmp->data != app_data){
 		tmp = tmp->right;
 	}
-	if (!tmp) return NULL;
+	if (tmp->data != app_data) return NULL;
 
 	return tmp;
 }
@@ -146,12 +151,11 @@ int find_node_pos (dll_t *dll, void *app_data){
 
 	dll_node_t *tmp = dll->head;
 	int pos = 0;
-	while (!tmp && tmp->data == app_data){
+	while (tmp->right != NULL && tmp->data != app_data){
 		tmp = tmp->right;
 		pos++;
 	}
-	if (!tmp) return -1;
-
+	if (tmp->data != app_data) return -1;
 	return pos;
 }
 
