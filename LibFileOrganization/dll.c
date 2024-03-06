@@ -52,7 +52,7 @@ int add_data_to_dll_end (dll_t *dll, void *app_data){
 	}
 	
 	dll_node_t *tmp = dll->head;
-	while (!tmp){
+	while (tmp->right != NULL){
 		tmp = tmp->right;
 	}
 
@@ -70,7 +70,7 @@ int delete_node (dll_t *dll, dll_node_t *node){
 	// the node to delete is the head of the list
 	if (node == dll->head){
 		dll->head = dll->head->right;
-		dll->left = NULL;
+		dll->head->left = NULL;
 		free(node);
 		return 0;
 	}
